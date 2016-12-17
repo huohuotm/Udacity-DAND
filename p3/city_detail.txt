@@ -1,0 +1,33 @@
+-----------------------------------
+This section is city names of 市:
+
+宁波市
+溧阳市
+上海市
+-----------------------------------
+This section is city names of 区:
+
+上海青浦区
+松江区
+-----------------------------------
+This section is city names of City:
+
+Kunshan City
+-----------------------------------
+This section is city names of District:
+
+Pudong District, Shanghai
+-----------------------------------
+This section is city names of others:
+
+上海
+Shanghai
+余杭
+镇江
+上海 Shanghai
+Suzhou SIP (Suzhou Culture and Arts Center north gate)
+苏州
+Hangzhou
+Wuxi
+Jiading
+杭州
