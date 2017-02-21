@@ -610,33 +610,163 @@ Treat deviation as noise:
 
 ![screenshot 2](ML_figure/screenshot 2.png)
 
-PCA in particular specializes on just shifts and rotation for the coordinate system.
+PCA in particular specializes on just **shifts** and **rotation** for the coordinate system.
 
 ![screenshot](ML_figure/screenshot-7645221.png)
 
-##### PCA Process:
+##### Example of PCA Process:
+
+> Background: we have following 4 features to predict house prices.
+>
+> square footage; no. of rooms; school ranking; neighborhood safety
+
+
 
 ###### Measuranle VS Latent Features
 
-![screenshot](ML_figure/screenshot-7645455.png)
+*Question：Given the feature of a house, what is its price?*
 
-###### How Press Infromation
+Measuranle Features:
+
+1. square footage     
+2. no. of rooms
+3. school ranking
+4. neighborhood safety
+
+transfrom to latent features:
+
+1. house size
+2. neighborhood
+
+
+
+###### How to Press Infromation
+
+*Question: How best to condense our 4 features to 2, sotaht we really get to the heart of the information?*
+
+Hypothesize a smaller no. of features actually driving the patterns, try making a **composite feature(principle component)** that are more directly probes the underlying phenomenon.
 
 
 
 ###### How to Determine the Principal Component
 
+Principal component of a dataset is the direction that has the largest variance.
+
+max variance —> max information;         minimize distance —> minimize infroamtion loss
 
 
 
-
-Find max variance vector
-
+![B54FE508-1AA7-4217-A9AD-8C967AD213E6](ML_figure/B54FE508-1AA7-4217-A9AD-8C967AD213E6.png)
 
 
-Usage
 
-As a genernal algorithm for feature transformation
+##### Usage
+
+As a genernal algorithm for feature transformation.
+
+![screenshot](ML_figure/screenshot-7648811.png)
+
+
+
+##### When to use PCA
+
+1. Latent features driving teh pattern in data
+2. dimensionality reduction
+   1. visualize high-dimentionality data
+   2. reduce noise
+   3. make other algorithms(regression/classification) work better with fewer inputs.
+
+
+
+##### How to Select No. of PCs
+
+Train on different number of PCs, and see how accuracy responds — cut off when it becomes appearent that adding more PCs doesn’t buy you much more discrimination.
+
+
+
+##### PCA in Sklearn
+
+[pca-sklearn](http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html#sklearn-decomposition-pca) [pca-face-recognization](http://scikit-learn.org/stable/auto_examples/applications/face_recognition.html#faces-recognition-example-using-eigenfaces-and-svms)
+
+```python
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+pca.fit(X_train)
+pca.transform(X_train)
+pca.transform(X_test)
+```
+
+
+
+## Validation
+
+[wiki](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) 
+
+##### Cross Validation
+
+The goal of cross validation is to define a dataset to "test" the model in the training phase (i.e., the validation dataset), in order to limit problems like overfitting, give an insight on how the model will generalize to an independent dataset (i.e., an unknown dataset, for instance from a real problem), etc.
+
+##### K-fold Cross Validation
+
+more times, more accuracy.
+
+1. Run K seperate learning experiments
+   1. Pick one of those k subset as your testing set. The remaining k-1 bins are put together into you training set
+   2. Train algorithm. 
+   3. Test performance on testing set. 
+2. Average test results from those k experiments
+
+
+
+![K-fold_cross_validation_EN](ML_figure/K-fold_cross_validation_EN.jpg)
+
+
+
+##### GridSearchCV 
+
+is a way of systematically working through multiple combinations of parameter tunes, cross-validating as it goes to determine which tune gives the best performance. 
+
+Here's an example from the sklearn documentation:
+
+```python
+parameters = {'kernel':('linear', 'rbf'), 'C':[1, 10]}
+svr = svm.SVC()
+# "parameters" generates a grid of parameter combinations to try.
+clf = grid_search.GridSearchCV(svr, parameters) 
+# "fit" tries all the parameter combinations, and returns a fitted classifier
+clf.fit(iris.data, iris.target) 
+clf.best_params_
+```
+
+
+
+## Evaluation Metrics
+
+##### Shortages of Accuracy:
+
+$\displaystyle \mathrm{Accuracy} = \frac{\mathrm{no.\ of\ items\ in\  a\ class\ labeled\ correctly }}{\mathrm{all\ items\ in\ that\ class}}$   not ideal for skewed classes
+
+
+
+##### Alternative evaluation:
+
+Facing skewed classes, using Recall, Precision and F1 score.
+
+**Recall** : Out of all the items that are truly positive, how many were correctly classified as positive. Or simply, how many positive items were 'recalled' from the dataset.
+
+$\displaystyle \mathrm{Recall} = \frac{\mathrm {True\ Positive}}{\mathrm {True\ Positive+False\ Negaticve}}$
+
+**Precision**:  Out of all the items labeled as positive, how many truly belong to the positive class.
+
+$\displaystyle \mathrm{Precision}=\frac{\mathrm{True\ Positive}}{\mathrm{True\ Positive+False\ Positive}}$
+
+**F1 Score**:  can be interpreted as a weighted average of the [Precision and Recall](https://en.wikipedia.org/wiki/Precision_and_recall), where an F1 score reaches its best value at 1 and worst at 0.
+
+${\displaystyle F_{1}=2\cdot {\frac {1}{{\tfrac {1}{\mathrm {Recall} }}+{\tfrac {1}{\mathrm {Precision} }}}}=2\cdot {\frac {\mathrm {Precision} \cdot \mathrm {Recall} }{\mathrm {Precision} +\mathrm {Recall} }}}$
+
+[ref](https://argcv.com/articles/1036.c) [wiki](https://en.wikipedia.org/wiki/F1_score)
+
+
 
 
 
