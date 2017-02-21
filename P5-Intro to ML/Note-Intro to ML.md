@@ -1,3 +1,9 @@
+---
+typora-copy-images-to: ./ML_figure
+---
+
+
+
 # Intro to MachineLearning
 
 
