@@ -599,6 +599,49 @@ make model higher accuracy and 高精准又不过拟合
 
 
 
+
+## Feature Transformation-PCA
+
+##### Dimentionality of Data
+
+![screenshot](ML_figure/screenshot.png)
+
+Treat deviation as noise:
+
+![screenshot 2](ML_figure/screenshot 2.png)
+
+PCA in particular specializes on just shifts and rotation for the coordinate system.
+
+![screenshot](ML_figure/screenshot-7645221.png)
+
+##### PCA Process:
+
+###### Measuranle VS Latent Features
+
+![screenshot](ML_figure/screenshot-7645455.png)
+
+###### How Press Infromation
+
+
+
+###### How to Determine the Principal Component
+
+
+
+
+
+Find max variance vector
+
+
+
+Usage
+
+As a genernal algorithm for feature transformation
+
+
+
+
+
 # PS:
 
 ## One way to Speed up an algorithm
