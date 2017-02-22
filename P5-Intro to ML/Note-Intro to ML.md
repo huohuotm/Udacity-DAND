@@ -32,7 +32,7 @@ Sensitivity: $\frac{TP}{AllT} = \frac{TP}{TP + FN}$
 
 Specifity：$\frac {TN}{AllN} = \frac{TN}{TN + FP}$
 
-![scenshot](/Users/weidian1/Documents/Study/MD_pic/scenshot.png)
+![scenshot]ML_figure/scenshot.png)
 
 
 
@@ -144,7 +144,7 @@ Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid’. If gamma is ‘a
 
 ##### Definition:
 
-![screjkkenshot](../Documents/Study/MD_pic/screjkkenshot.png)
+![screjkkenshot](ML_figure/screjkkenshot.png)
 
 
 
@@ -154,7 +154,7 @@ Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid’. If gamma is ‘a
 
 Too samll min_sample_split counld probably overfit.
 
-![scre568fenshot](../Documents/Study/MD_pic/scre568fenshot.png)
+![scre568fenshot](ML_figure/scre568fenshot.png)
 
 
 
@@ -217,7 +217,7 @@ $IG = Entropy(parent) - [weight]*Entropy(children) $
 
 more data —> bigger SSE
 
-![screenshojiit](../Documents/Study/MD_pic/screenshojiit.png)
+![screenshojiit](ML_figure/screenshojiit.png)
 
 ##### R² of Regression
 
@@ -279,9 +279,9 @@ Weakness:
 
 1. 随机起始中心点可能会影响分类结果
 
-   > example1.![屏幕快照 2017-02-06 下午9.13.42](../Documents/Study/MD_pic/屏幕快照 2017-02-06 下午9.13.42.png)
+   > example1.![屏幕快照 2017-02-06 下午9.13.42](ML_figure/屏幕快照 2017-02-06 下午9.13.42.png)
    >
-   > example2.![screendewshot](../Documents/Study/MD_pic/screendewshot.png)
+   > example2.![screendewshot](ML_figure/screendewshot.png)
 
    Fix method: tune parameter **n_init**
 
@@ -328,7 +328,7 @@ $X_{scaled} = \frac{X-X_{min}}{X_{max}-X_{min}}$    $(0 \le X_{scaled} \le 1)$
 >
 > After scaled:  Chris' figure size(height+weight = 1+0.417 =1.417) is closer to Cameron( 0.778+1 = 1.778)  than Sarah(0), match our intuition.
 >
-> ![screhceouwenshot](../Documents/Study/MD_pic/screhceouwenshot.png)
+> ![screhceouwenshot](ML_figure/screhceouwenshot.png)
 
 ##### Weakness: 
 
@@ -454,7 +454,7 @@ stopwords：low-information, highly frequency word (like "I", "a", "you").
 
 把多个同义或仅轻微区别的字词 词干化，变成一个词。
 
-![screecccnshot](../Documents/Study/MD_pic/screecccnshot.png)
+![screecccnshot](ML_figure/screecccnshot.png)
 
 ###### Sklearn Method of "SnowballStemmer"
 
@@ -502,7 +502,7 @@ Features (attempt to access information) $\ne$ Information (we want this !)
 Ignore features that 
 
 * are noisy
-* causeoverfitting
+* cause overfitting
 * strongly related with a feature that's already present
 * additional feature slow down training/testing process
 
@@ -565,7 +565,7 @@ max_df: ignore terms that have a document frequency strictly higher than the gi
 
 
 
-![screenscwhohot](../Documents/Study/MD_pic/screenscwhohot.png)
+![screenscwhohot](ML_figure/screenscwhohot.png)
 
 
 
@@ -768,9 +768,11 @@ ${\displaystyle F_{1}=2\cdot {\frac {1}{{\tfrac {1}{\mathrm {Recall} }}+{\tfrac 
 
 
 
+# Process of ML
 
+Dataset/Question —> Features —> ALgorithms —> Evaluation
 
-
+![screenshot](ML_figure/screenshot-7722152.png)
 
 # PS:
 
@@ -788,8 +790,6 @@ labels_train = labels_train[:len(labels_train)/100] 
 ## Data Set 
 
 usually more training data —>better accuracy  than  fine tuned algorithm
-
-
 
 ##### Type of Data
 
