@@ -39,4 +39,10 @@ aS'long_term_incentive'
 p19
 aS'from_poi_to_this_person'
 p20
+aS'email_features_miss'
+p21
+aS'poi_rate_to_messages'
+p22
+aS'poi_rate_from_messages'
+p23
 a.
