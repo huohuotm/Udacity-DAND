@@ -97,6 +97,8 @@ Add **nonlinear feature**  make  SVM **linear separate** points.
 
 
 
+
+
 ##### Parameter-Tradeoff:
 
 * C parameter: Penalty parameter C of the error term.
@@ -201,7 +203,7 @@ $IG = Entropy(parent) - [weight]*Entropy(children) $
 
 ## Regression
 
-##### Methods of Minimizing Error:
+##### Methods of Minimizing Error:[需要修正]
 
 * OLS (ordinary least square) 普通最小二乘法
 
@@ -279,7 +281,9 @@ Weakness:
 
 1. 随机起始中心点可能会影响分类结果
 
-   > example1.![屏幕快照 2017-02-06 下午9.13.42](ML_figure/屏幕快照 2017-02-06 下午9.13.42.png)
+   > example1.
+   >
+   > ![屏幕快照 2017-02-06 下午9.13.42](ML_figure/屏幕快照 2017-02-06 下午9.13.42.png)
    >
    > example2.![screendewshot](ML_figure/screendewshot.png)
 
@@ -670,7 +674,7 @@ As a genernal algorithm for feature transformation.
 
 ##### When to use PCA
 
-1. Latent features driving teh pattern in data
+1. Latent features driving the pattern in data
 2. dimensionality reduction
    1. visualize high-dimentionality data
    2. reduce noise
