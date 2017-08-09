@@ -10,7 +10,11 @@ Summarize for us the goal of this project and how machine learning is useful in 
 
 ### A1：
 
-The goal of this project is to classify POIs. We have 145 data points with 21 features, including 18 POIs and 127 no-POIs. 59 data points missed all email features except email address (email address is not so useful here). And I remove two outliers,'TOTAL' and 'THE TRAVEL AGENCY IN THE PARK' don't look like a person's name. Finally, I choose Adaptive Boosting algorithm to build my classifier model.
+The goal of this project is to classify POIs. We have 145 data points with 21 features, including 18 POIs and 127 no-POIs. There is an obvious class imbalance phenomenon.
+
+59 data points missed all email features except email address (email address is not so useful here).  I remove three outliers, 'TOTAL' and 'THE TRAVEL AGENCY IN THE PARK' don't look like a person's name. Person named 'LOCKHART EUGENE E' has all its value missing, which is useless to train model.
+
+Finally, I choose Adaptive Boosting algorithm to build my classifier model.
 
 ### Q2:
 
@@ -20,33 +24,65 @@ What features did you end up using in your POI identifier, and what selection pr
 
 **feature selection**
 
-I used SelectKBest method of Sklearn to pick up four features ('exercised_stock_options',  'loan_advances', 'total_stock_value', 'bonus') . The fifth feature salary only get 3.1 scores , much less than the former four . I also tuning parameter k in GridSerachCV, which shows using top four features can have the best performance.
+I used SelectKBest method of Sklearn to pick up four features ('exercised_stock_options',  'loan_advances', 'total_stock_value', 'bonus') . The fifth feature salary only get 3.05 scores , much less than the former four . I also tuning parameter k in GridSerachCV, which shows using top four features can have the best metric defined by myself. It takes both recall and precision into account. See more detailes in next part **evaluation metric**. 
 
-| feature                 | score & rank |
-| ----------------------- | ------------ |
-| exercised_stock_options | 6.927477, 1  |
-| loan_advances           | 6.742748, 2  |
-| total_stock_value       | 5.544840, 3  |
-| bonus                   | 5.193349, 4  |
-| salary                  | 3.116644, 5  |
+| feature                 | score (two decimals) | rank |
+| ----------------------- | -------------------- | ---- |
+| exercised_stock_options | 6.85                 | 1    |
+| loan_advances           | 6.69                 | 2    |
+| total_stock_value       | 5.48                 | 3    |
+| bonus                   | 5.12                 | 4    |
+| salary                  | 3.05                 | 5    |
+
+
+
+**evaluation metric **
+
+As precision and recall of final classifier are both supposed no less than 0.3,  I define an evaluation metric that take both into account. This metric returns f1_score score, if precision and recall both over 0.3; returns 0.3 if one is less than 0.3;   returns 0 if neiher of them over 0.3. 
+
+```python
+# fucntion: define an evaluation metric 
+# in order to get more performant model whose recall and precision are both over 0.3 
+def scorer_r_p(estimator, features_test, labels_test):
+	labels_pred = estimator.predict(features_test)
+	pre= precision_score(labels_test, labels_pred, average='micro')
+	rec = recall_score(labels_test, labels_pred, average='micro')
+	if pre>0.3 and rec>0.3:
+		return f1_score(labels_test, labels_pred, average='macro')
+	elif  pre>0.3 and rec<0.3:
+		return 0.3
+	elif rec >0.3 and pre<0.3:
+		return 0.3
+	return 0
+```
+
+
 
 **scale**
 
-Before feature selection , I scaled features the range between 0 to 1, as chi-squared stats used in selection was computed between each non-negative feature and class. 
+Before feature selection, I scaled features to a range from 0 to 1.  We will compute chi-squared value in feature selection, which only can be computed for non-negative values.
+
+
 
 **new features**
 
 I add three new features: 
 
-'email_features_miss' is a dummy variable that indicates whether this data point miss email features. The feature_format function will transformed 'NAN' to 0, but 'NAN' of email features is not equal to the value 0. I think that missing value could possibly be a new feature.
+'email_features_miss' is a dummy variable that indicates whether this data point miss email features (yes: 1; no: 0). The feature_format function will transformed 'NAN' to 0, but 'NAN' of email features is not equal to the value 0. I think that missing value could possibly be a new feature.
 
-'poi_rate_to_messages' compute the proportion of the number of messages sent to poi in the total number of messages sent. And 'poi_rate_from_messages' compute the proportion of the number of messages received from poi in the total number of messages received. When the number of messages of two person is very different, the percentage is more meaningful than the absolute number.
+'poi_rate_to_messages' compute the proportion of the number of messages sent to poi in the total number of messages sent ($poi\_rate\_to\_messages=\frac{from\_this\_person\_to\_poi} {to\_messages}$). 
 
-| new features           | meaning                                  | score & rank in feature selection |
-| ---------------------- | ---------------------------------------- | --------------------------------- |
-| email_features_miss    | if email features are missing (yes:1; no:0) | 1.665025, 11                      |
-| poi_rate_to_messages   | 'from_this_person_to_poi' / 'to_messages' | 1.293839, 15                      |
-| poi_rate_from_messages | 'from_poi_to_this_person' / 'from_messages' | 1.816426, 9                       |
+And 'poi_rate_from_messages' compute the proportion of the number of messages received from poi in the total number of messages received ($poi\_rate\_from\_messages = \frac{from\_poi\_to\_this_person}{from\_messages}$). 
+
+When the number of messages of two person is very different, the percentage is more meaningful than the absolute number.
+
+The left part of the below picture shows the features' scores for the original feature set and the right part shows the features' scores added with the new features. 
+
+The rankings of 'email_features_miss', 'poi_rate_from_messages' and 'poi_rate_to_messages' are 11th, 9th and 15th respectively.  The median of the rankings is 1.55 scores and the mean is 2.19 scores. Though the scores of 'email_features_miss' and 'poi_rate_from_messages' are higher then the median, the scores of the three features are all less then the mean. Due to the low scores, they won't be used in the final model.
+
+![屏幕快照 2017-07-02 下午3.08.21](../../../../../../Desktop/屏幕快照 2017-07-02 下午3.08.21.png)
+
+
 
 ### Q3:
 
@@ -76,17 +112,29 @@ I use the combination of GridSearchCV and Pipeline to tune parameters. The tuned
 
 Following are relative codes:
 
-```pyt
-pipe = Pipeline([('scaler',MinMaxScaler(feature_range=(0,1))), 
-                ('selector', SelectKBest()),
-                  ('classifier', AdaBoostClassifier(random_state=32))])
-param_grid = dict( selector__score_func=[chi2,f_classif],
-                  selector__k=range(4,11),
-                 classifier__n_estimators=[50,80,100]
-                 ,classifier__learning_rate=[0.5,1,1.5,2]
-                ,classifier__base_estimator=[DecisionTreeClassifier(min_samples_split=2), DecisionTreeClassifier(min_samples_split=3), DecisionTreeClassifier(min_samples_split=4)] )
-clf_grid = GridSearchCV(pipe, param_grid, scoring=scorer_r_p, cv=sss, n_jobs=-1)
-clf_grid.fit(features, labels)
+```python
+# function: build model and tuning parameters
+def train_classifier(features,labels,n=50):
+    # Stratified ShuffleSplit cross-validator
+	sss = StratifiedShuffleSplit(labels, n_iter=n, test_size = 0.2, random_state=42)
+	# Pipeline of transforms with a final estimator.
+	pipe = Pipeline([('scaler',MinMaxScaler(feature_range=(0,1))), 
+	                ('selector', SelectKBest()),
+	                  ('classifier', AdaBoostClassifier(random_state=32))])
+	# Specify a parameter grid.
+	# The tuned parameters are k (number of selected features) and score function in feature selection process,iteration times , learning rate, base estimator (min_samples_split of DecisionTree) of Adaptive Boosting algorithm.
+	param_grid = dict( selector__score_func=[chi2,f_classif]
+	     ,selector__k=range(4,11)
+	     ,classifier__n_estimators=[50,80,100]
+	     ,classifier__learning_rate=[0.5,1,1.5,2]
+	     ,classifier__base_estimator=[DecisionTreeClassifier(min_samples_split=2)	                                               		    						 ,DecisionTreeClassifier(min_samples_split=3)
+                                     ,DecisionTreeClassifier(min_samples_split=4)])
+	# Exhaustive search over specified parameter values for AdaBoostClassifier.
+	clf_grid = GridSearchCV(pipe, param_grid, scoring=scorer_r_p, cv=sss, n_jobs=-1)
+	clf_grid.fit(features, labels)
+	clf = clf_grid.best_estimator_
+	return clf
+
 ```
 
 
@@ -101,7 +149,11 @@ Validation is a method to estimate how well is the trained model.
 
 Without validation, small training errors will overestimate the performace of the model. If I use much data for validation, the model could be underfitting due to lacking enough training data.
 
-I use StratifiedShuffleSplit method in SKlearn. This Stratified ShuffleSplit cross validation iterator provides train/test indices to split data in train test sets. I set the number of re_shuffling & splitting iterations to 1000 times and test_size to 0.1.
+Another problem is that when dealing with small imbalanced datasets (like 18 pois vs 127 no-pois) with corss-validation, it is possible that some folds contain almost none (or even none!) instances of the minority class.
+
+Here, I use [StratifiedShuffleSplit](http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedShuffleSplit.html#sklearn-model-selection-stratifiedshufflesplit) method in SKlearn, which returns stratified randomized folds. The folds are made by preserving the percentage of samples for each class, which can fix the above problem and help to estimate the performace of the model more precisely.
+
+
 
 ### Q6:
 
@@ -109,7 +161,7 @@ Give at least 2 evaluation metrics and your average performance for each of them
 
 ### A6:
 
-The final classifier model get accuracy 0.85, precision 0.45, recall 0.40.
+The final classifier model get accuracy 0.85, precision 0.43, recall 0.38.
 
 Accuracy is the fraction of total predictions that are predicted correctly. $\displaystyle  \mathrm  Accuracy = \frac{True\ pois+True\ no\_pois}{Total\ predictions }$
 
