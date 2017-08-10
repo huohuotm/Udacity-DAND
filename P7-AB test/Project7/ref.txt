@@ -1,0 +1,4 @@
+ref：
+https://discussions.udacity.com
+https://review.udacity.com/#!/rubrics/54/view
+http://www.evanmiller.org/ab-testing/sample-size.html
