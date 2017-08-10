@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
+  <style>
+    h2 {
+      text-align:center;
+      font-size: 250%;
+    }
+
+    div.detail_button {
+        position: fixed;
+        top: 40px;
+        left: 50px;
+    }
+
+    div.detail_button div {
+      background-color: #FB8072;
+      padding: 3px;
+      margin: 7px;
+      color: white;
+    }
+  </style>
+  <script type="text/javascript">
+      
+      function draw(data){
+      /*
+        D3.js setup code
+      */
+
+          
+          d3.select("body")
+            .append("h2")
+            .text("Survived or Perished on Titanic");
+
+          d3.select("body")
+            .append("h3")
+            .text("Background:");
+
+          // add background
+          d3.select("body")
+            .append("p")
+            .text("RMS Titanic was a British passenger liner that sank in the North Atlantic Ocean in the early morning of 15 April 1912, after colliding with an iceberg during her maiden voyage from Southampton to New York City. Of the estimated 2,224 passengers and crew aboard, more than 1,500 died, making it one of the deadliest commercial peacetime maritime disasters in modern history. Here, we use the training dataset(891 samples) from kaggle and explore survial chance in different crowds and classes. Click 'more', see details. ");
+
+          // create button 
+          var button = d3.select("body")
+            .append("div")
+            .attr("class", "detail_button")
+            .append("div")
+            .text("More");
+
+          //function: add new svg container
+          function add_svg(width, height){
+              var svg = d3.select("body")
+                       .append("svg")
+                          .attr("width", width )
+                          .attr("height", height )
+                       .append('g')
+                          .attr('class','chart');
+              return svg;
+          };
+      /*
+        Dimple.js Chart construction code
+      */
+          //function: create initial chart
+          function initial_plot(svg,data){
+                  var myChart1 = new dimple.chart(svg, data);
+                  var x = myChart1.addCategoryAxis("x", "Survived or Not"); 
+                  x.addOrderRule(["Survived","Perished"])    
+                  myChart1.addMeasureAxis("y", "Count");
+                  myChart1.addSeries(null, dimple.plot.bar);
+                  myChart1.draw();
+          };
+
+          //function: create the second and third chart
+          function draw_detail(svg2,svg3,data){
+                  //draw the second chart
+                  
+                  var myChart2 = new dimple.chart(svg2, data);
+                  var x2 = myChart2.addCategoryAxis("x", "Who"); 
+                  x2.addOrderRule(["Children (age<10)","Women","Men"])   
+                  myChart2.addMeasureAxis("y", "Count");
+                  var mySeries2 = myChart2.addSeries("Survived or Not", dimple.plot.bar);
+                  mySeries2.addOrderRule(["Perished","Survived"]);
+                  myChart2.addLegend(350, 10, 180, 20, "right");
+                  myChart2.draw();
+
+                  //draw the third chart
+                  var myChart3 = new dimple.chart(svg3, data);
+                  var x3 = myChart3.addCategoryAxis("x", "Class"); 
+                  x3.addOrderRule(["1st class","2nd class","3rd class"])    
+                  myChart3.addMeasureAxis("y", "Count");
+                  var mySeries3 = myChart3.addSeries("Survived or Not", dimple.plot.bar);
+                  mySeries3.addOrderRule(["Perished","Survived"]);
+                  myChart3.addLegend(350, 10, 180, 20, "right");
+                  myChart3.draw();
+          };
+
+          // create one svg and the initial chart.
+          var svg = add_svg(1000,500);
+          initial_plot(svg,data);
+
+          d3.select("svg")
+            .select("g")
+            .attr("transform", "translate(50,0)");
+
+          button.on("click", function(d){
+                if (d3.select(this).text() === "More") {
+                      // clean the all svg container and charts
+                      d3.selectAll("svg")
+                        .remove();
+
+                      // change text "More" to "Less" and style
+                      d3.select(this)  
+                      .transition()
+                      .duration(500)
+                      .style("background", "lightBlue")
+                      .text("Less");
+                      
+                      // add figures explaination
+                      var notes = ["Figure1 (Upper left) : Shows the No. of survivors/victims of the whole ship."
+                                  , "Figure2 (Bottom left) : Shows the No. of survivors/victims in three crowds(Children: age less than 10, Women, Men). "
+                                  , "Figure3 (Bottom right) : Shows the No. of survivors/victims in three class(1st class, 2nd class, 3rd class)."]
+                      var text =  d3.select("body")
+                                    .append("svg")
+                                    .attr("width",1000)
+                                    .attr("height",80)
+                                    .append("text")
+                                    .attr("width",1000)
+                                    .attr("height",50);
+
+                      text.selectAll("tspan")
+                         .data(notes)
+                         .enter()
+                         .append("tspan")
+                         .attr("x","10")
+                         .attr("dy","1.5em")
+                         .text(function(d){
+                           return d;
+                           });
+
+                      // create four svg containers
+                      var svg_new = add_svg(450,400);
+                      var svg_blank = add_svg(550,300);
+                      var svg2 = add_svg(550,400);
+                      var svg3 = add_svg(550,400);  
+
+                      // draw three charts, leave the second svg blank
+                      initial_plot(svg_new,data);
+                      draw_detail(svg2,svg3,data);
+
+
+
+               } else {
+                     // clean the all svg container and charts
+                      d3.selectAll("svg")
+                        .remove();
+                      // change text "Less" to "More" and style
+                      d3.select(this)  
+                        .transition()
+                        .duration(500)
+                        .style("background", "#FB8072")
+                        .text("More");
+
+                      // create one container and draw chart
+                      var svg = add_svg(1000,600);
+                      initial_plot(svg,data);
+                      d3.select("svg")
+                        .select("g")
+                        .attr("transform", "translate(50,0)");
+             
+                };
+            });
+
+      };
+
+      </script>
+  </head>
+<body>
+  <script type="text/javascript">
+   d3.csv("plot_data.csv", draw); // load data
+  </script>
+</body>
+</html>
